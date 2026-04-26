@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighbor Aid Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="feed-header">
+      <nav class="topbar">
+        <div class="brand">Neighbor Aid Profile</div>
+        <div class="topbar-links">
+          <a href="index.html">Home</a>
+          <a href="feed.html">Feed</a>
+          <button class="link-btn" id="logout-btn" type="button">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="feed-page-shell">
+      <section class="detail-layout">
+        <aside class="panel profile-panel">
+          <p class="section-label">Your Profile</p>
+          <h2 id="profile-summary-name">Current User</h2>
+          <p class="meta-text" id="profile-summary-area">Area not set</p>
+          <p class="meta-large">Manage your personal profile details here.</p>
+        </aside>
+
+        <section class="detail-main">
+          <section class="panel">
+            <div class="section-heading">
+              <p class="section-label">Profile Details</p>
+              <h1>Edit your profile</h1>
+              <p>Keep your personal information updated for Neighbor Aid.</p>
+            </div>
+
+            <form class="auth-form profile-form" id="profile-form">
+              <label for="profile-name">Full Name</label>
+              <input id="profile-name" name="profileName" type="text" placeholder="Enter your full name" />
+
+              <label for="profile-email">Email</label>
+              <input id="profile-email" name="profileEmail" type="email" disabled />
+
+              <label for="profile-area">Area</label>
+              <input id="profile-area" name="profileArea" type="text" placeholder="Enter your local area" />
+
+              <button class="primary-btn" type="submit">Save Profile</button>
+            </form>
+
+            <p class="message-text" id="profile-message" aria-live="polite"></p>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

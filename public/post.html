@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighbor Aid Post</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="feed-header">
+      <nav class="topbar">
+        <div class="brand">Neighbor Aid Post</div>
+        <div class="topbar-links">
+          <a href="index.html">Home</a>
+          <a href="feed.html">Feed</a>
+          <a href="profile.html">Profile</a>
+          <button class="link-btn" id="logout-btn" type="button">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="feed-page-shell">
+      <section class="detail-layout">
+        <aside class="panel profile-panel">
+          <p class="section-label">Current User</p>
+          <h2 id="detail-user-name">Current User</h2>
+          <p class="meta-text" id="detail-user-area">Area not set</p>
+          <p class="meta-large">You are viewing one help request in detail.</p>
+
+          <div class="hero-actions">
+            <a class="secondary-btn" href="feed.html">Back to Feed</a>
+          </div>
+        </aside>
+
+        <section class="detail-main">
+          <section class="panel" id="post-detail"></section>
+
+          <section class="panel">
+            <div class="section-heading">
+              <p class="section-label">Comments</p>
+              <h2>Support discussion</h2>
+              <p>Use this page to read and add comments for this request.</p>
+            </div>
+
+            <div class="comment-list detail-comment-list" id="post-comments"></div>
+
+            <form class="comment-form detail-comment-form" id="detail-comment-form">
+              <textarea
+                id="detail-comment-text"
+                name="detailCommentText"
+                rows="3"
+                placeholder="Write a helpful comment for this request"
+              ></textarea>
+              <button class="comment-btn" type="submit">Add Comment</button>
+            </form>
+
+            <p class="message-text" id="detail-message" aria-live="polite"></p>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighbor Aid Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="auth-page-shell">
+      <section class="auth-layout">
+        <div class="auth-info-panel">
+          <p class="eyebrow">Neighbor Aid Firebase Login</p>
+          <h1>Join the community with a new account.</h1>
+          <p class="hero-copy">
+            This page now uses Firebase Authentication instead of the dummy
+            login. You can create a new account and then move directly into the
+            feed, or log in if you already have one.
+          </p>
+
+          <div class="hero-actions">
+            <a class="secondary-btn" href="index.html">Back to Home</a>
+          </div>
+        </div>
+
+        <section class="panel auth-box">
+          <div class="section-heading">
+            <p class="section-label">Authentication</p>
+            <h2>Login or create a new account</h2>
+            <p id="auth-mode-note">Login with an existing Neighbor Aid account.</p>
+          </div>
+
+          <div class="auth-toggle">
+            <button class="toggle-btn active" id="show-login" type="button">Login</button>
+            <button class="toggle-btn" id="show-signup" type="button">Sign Up</button>
+          </div>
+
+          <form class="auth-form" id="login-form">
+            <label for="login-email">Email</label>
+            <input
+              id="login-email"
+              name="loginEmail"
+              type="email"
+              placeholder="Enter your email"
+            />
+
+            <label for="login-password">Password</label>
+            <input
+              id="login-password"
+              name="loginPassword"
+              type="password"
+              placeholder="Enter your password"
+            />
+
+            <button class="primary-btn" type="submit">Login to Feed</button>
+          </form>
+
+          <form class="auth-form hidden" id="signup-form">
+            <label for="signup-name">Full Name</label>
+            <input
+              id="signup-name"
+              name="signupName"
+              type="text"
+              placeholder="Enter your full name"
+            />
+
+            <label for="signup-email">Email</label>
+            <input
+              id="signup-email"
+              name="signupEmail"
+              type="email"
+              placeholder="Enter your email"
+            />
+
+            <label for="signup-password">Password</label>
+            <input
+              id="signup-password"
+              name="signupPassword"
+              type="password"
+              placeholder="Create a password"
+            />
+
+            <label for="signup-area">Area</label>
+            <input
+              id="signup-area"
+              name="signupArea"
+              type="text"
+              placeholder="Enter your local area"
+            />
+
+            <button class="primary-btn" type="submit">Create Account</button>
+          </form>
+
+          <p class="message-text" id="login-message" aria-live="polite"></p>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

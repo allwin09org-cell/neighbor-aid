@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighbor Aid Feed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="feed-header">
+      <nav class="topbar">
+        <div class="brand">Neighbor Aid Feed</div>
+        <div class="topbar-links">
+          <a href="index.html">Home</a>
+          <a href="profile.html">Profile</a>
+          <button class="link-btn" id="logout-btn" type="button">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="feed-page-shell">
+      <section class="feed-layout">
+        <aside class="panel profile-panel">
+          <p class="section-label">Current User</p>
+          <h2 id="current-user-name">Current User</h2>
+          <p class="meta-text" id="current-user-area">Area not set</p>
+          <p class="meta-large">You are now inside the community help feed.</p>
+
+          <div class="tip-box">
+            <h3>What you can do</h3>
+            <ul>
+              <li>Create a new help request</li>
+              <li>Open a post to read all comments</li>
+              <li>Mark posts as open or resolved</li>
+            </ul>
+          </div>
+        </aside>
+
+        <section class="feed-main">
+          <section class="panel">
+            <div class="section-heading">
+              <p class="section-label">Community Feed</p>
+              <h1>Neighbor help requests</h1>
+              <p>
+                This page behaves like a simple social feed for local support.
+              </p>
+            </div>
+
+            <form class="post-form" id="post-form">
+              <label for="request-category">Choose a category</label>
+              <select id="request-category" name="requestCategory">
+                <option value="">Select a category</option>
+                <option value="Banking">Banking</option>
+                <option value="Home Renovation">Home Renovation</option>
+                <option value="Vehicle Repairs">Vehicle Repairs</option>
+                <option value="Medical Help">Medical Help</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Child Care">Child Care</option>
+                <option value="Pet Care">Pet Care</option>
+                <option value="Education">Education</option>
+                <option value="Technology Support">Technology Support</option>
+                <option value="Moving Help">Moving Help</option>
+              </select>
+
+              <label for="request-location">Help required location</label>
+              <input
+                id="request-location"
+                name="requestLocation"
+                type="text"
+                placeholder="Example: Near City Hospital, Main Road"
+              />
+
+              <label for="request-text">Share a new request</label>
+              <textarea
+                id="request-text"
+                name="requestText"
+                rows="4"
+                placeholder="Example: I need someone to help carry water cans tomorrow morning."
+              ></textarea>
+
+              <button class="primary-btn" type="submit">Post Request</button>
+            </form>
+
+            <p class="message-text" id="feed-message" aria-live="polite"></p>
+          </section>
+
+          <section class="feed-list" id="feed-list"></section>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

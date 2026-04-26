@@ -1,0 +1,119 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function sameKeys(keys) {
+      return request.resource.data.keys().hasOnly(keys);
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && sameKeys(["uid", "displayName", "email", "area", "createdAt", "updatedAt"])
+        && request.resource.data.uid == uid
+        && request.resource.data.displayName is string
+        && request.resource.data.email is string
+        && request.resource.data.area is string
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+
+      allow update: if signedIn()
+        && request.auth.uid == uid
+        && sameKeys(["uid", "displayName", "email", "area", "createdAt", "updatedAt"])
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.displayName is string
+        && request.resource.data.area is string
+        && request.resource.data.updatedAt is timestamp;
+
+      allow delete: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && sameKeys(["name", "slug", "sortOrder", "isActive", "createdAt"])
+        && request.resource.data.name is string
+        && request.resource.data.slug is string
+        && request.resource.data.sortOrder is int
+        && request.resource.data.isActive is bool
+        && request.resource.data.createdAt is timestamp;
+
+      allow update, delete: if false;
+    }
+
+    match /posts/{postId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && sameKeys([
+          "authorId",
+          "authorName",
+          "authorArea",
+          "categoryId",
+          "categoryName",
+          "helpLocation",
+          "text",
+          "status",
+          "commentCount",
+          "createdAt",
+          "updatedAt",
+          "resolvedAt"
+        ])
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.authorName is string
+        && request.resource.data.authorArea is string
+        && request.resource.data.categoryId is string
+        && request.resource.data.categoryName is string
+        && request.resource.data.helpLocation is string
+        && request.resource.data.text is string
+        && request.resource.data.status == "open"
+        && request.resource.data.commentCount == 0
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp
+        && request.resource.data.resolvedAt == null;
+
+      allow update: if signedIn() && (
+        (
+          request.auth.uid == resource.data.authorId
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly(["status", "resolvedAt", "updatedAt"])
+          && request.resource.data.status in ["open", "resolved"]
+          && request.resource.data.updatedAt is timestamp
+          && (
+            (request.resource.data.status == "resolved" && request.resource.data.resolvedAt is timestamp) ||
+            (request.resource.data.status == "open" && request.resource.data.resolvedAt == null)
+          )
+        ) ||
+        (
+          request.resource.data.diff(resource.data).changedKeys().hasOnly(["commentCount", "updatedAt"])
+          && request.resource.data.commentCount == resource.data.commentCount + 1
+          && request.resource.data.updatedAt is timestamp
+        )
+      );
+
+      allow delete: if false;
+
+      match /comments/{commentId} {
+        allow read: if signedIn();
+
+        allow create: if signedIn()
+          && request.resource.data.keys().hasOnly(["authorId", "authorName", "text", "createdAt", "updatedAt"])
+          && request.resource.data.authorId == request.auth.uid
+          && request.resource.data.authorName is string
+          && request.resource.data.text is string
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.updatedAt is timestamp;
+
+        allow update, delete: if false;
+      }
+    }
+
+  }
+}
