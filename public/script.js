@@ -22,6 +22,7 @@ import {
   writeBatch,
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+// These are the default categories we show in the app
 const CATEGORY_SEEDS = [
   { id: "banking", name: "Banking" },
   { id: "home-renovation", name: "Home Renovation" },
@@ -35,6 +36,7 @@ const CATEGORY_SEEDS = [
   { id: "moving-help", name: "Moving Help" },
 ];
 
+// Shows a message below a form or section
 function showMessage(element, text, tone = "default") {
   if (!element) {
     return;
@@ -44,6 +46,7 @@ function showMessage(element, text, tone = "default") {
   element.dataset.tone = tone;
 }
 
+// Clears old message text
 function clearMessage(element) {
   if (!element) {
     return;
@@ -53,6 +56,7 @@ function clearMessage(element) {
   delete element.dataset.tone;
 }
 
+// Prevents HTML from breaking when user types special characters
 function escapeHtml(text) {
   return String(text)
     .replaceAll("&", "&amp;")
@@ -62,6 +66,7 @@ function escapeHtml(text) {
     .replaceAll("'", "&#39;");
 }
 
+// Changes Firebase timestamp into readable date text
 function formatDate(value) {
   if (!value || !value.toDate) {
     return "Just now";
@@ -73,10 +78,12 @@ function formatDate(value) {
   }).format(value.toDate());
 }
 
+// Makes the status text look cleaner
 function formatStatus(status) {
   return status === "resolved" ? "Resolved" : "Open";
 }
 
+// Converts Firebase errors into simpler messages
 function getFriendlyError(error) {
   const messages = {
     "auth/email-already-in-use": "That email is already registered. Try logging in instead.",
@@ -92,6 +99,7 @@ function getFriendlyError(error) {
   return messages[error.code] || messages[error.message] || "Something went wrong. Please try again.";
 }
 
+// Creates a new Firebase auth user and user profile
 async function signUpUser(email, password, profileData) {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   const userProfile = {
@@ -107,18 +115,22 @@ async function signUpUser(email, password, profileData) {
   return userCredential.user;
 }
 
+// Logs in an existing user
 async function signInUser(email, password) {
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
   return userCredential.user;
 }
 
+// Logs out the current user
 async function signOutUser() {
   await signOut(auth);
 }
 
+// Shows or hides nav links based on login state
 function updateAuthAwareUi(user) {
   const loginLink = document.getElementById("nav-login-link");
   const feedLink = document.getElementById("nav-feed-link");
+  const notificationsLink = document.getElementById("nav-notifications-link");
   const profileLink = document.getElementById("nav-profile-link");
   const logoutButton = document.getElementById("logout-btn");
   const homeMainCta = document.getElementById("home-main-cta");
@@ -129,6 +141,10 @@ function updateAuthAwareUi(user) {
 
   if (feedLink) {
     feedLink.classList.toggle("hidden", !user);
+  }
+
+  if (notificationsLink) {
+    notificationsLink.classList.toggle("hidden", !user);
   }
 
   if (profileLink) {
@@ -145,6 +161,7 @@ function updateAuthAwareUi(user) {
   }
 }
 
+// Sends user to login page if they are not signed in
 function requireAuthRedirect(onAuthenticated) {
   return onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -156,6 +173,7 @@ function requireAuthRedirect(onAuthenticated) {
   });
 }
 
+// Makes sure each auth user also has a profile document
 async function ensureUserProfile(user, profileOverride = null) {
   const userRef = doc(db, "users", user.uid);
   const userSnapshot = await getDoc(userRef);
@@ -189,6 +207,7 @@ async function ensureUserProfile(user, profileOverride = null) {
   };
 }
 
+// Updates profile fields in Firestore
 async function updateUserProfile(uid, profileData) {
   await updateDoc(doc(db, "users", uid), {
     displayName: profileData.displayName,
@@ -197,6 +216,7 @@ async function updateUserProfile(uid, profileData) {
   });
 }
 
+// Adds category data only once if it is missing
 async function ensureCategoriesSeeded() {
   const categoryQuery = query(collection(db, "categories"), limit(1));
   const categorySnapshot = await getDocs(categoryQuery);
@@ -220,6 +240,7 @@ async function ensureCategoriesSeeded() {
   await batch.commit();
 }
 
+// Loads categories into the dropdown
 async function loadCategories(selectElement) {
   await ensureCategoriesSeeded();
 
@@ -244,6 +265,7 @@ async function loadCategories(selectElement) {
   });
 }
 
+// Empty state when there are no posts yet
 function renderEmptyFeed(feedList) {
   feedList.innerHTML = `
     <article class="request-card">
@@ -256,6 +278,20 @@ function renderEmptyFeed(feedList) {
   `;
 }
 
+// Empty state when search finds nothing
+function renderNoSearchResults(feedList, searchTerm) {
+  feedList.innerHTML = `
+    <article class="request-card">
+      <div class="section-heading">
+        <p class="section-label">No Matching Posts</p>
+        <h2>No results for "${escapeHtml(searchTerm)}"</h2>
+        <p>Try searching with a different service, user name, category, or location.</p>
+      </div>
+    </article>
+  `;
+}
+
+// Creates one post card for the feed
 function createPostCard(post, currentUserId) {
   const card = document.createElement("article");
   card.className = "request-card";
@@ -274,6 +310,7 @@ function createPostCard(post, currentUserId) {
 
     <div class="card-body">
       <span class="category-badge">${escapeHtml(post.categoryName)}</span>
+      ${post.isEmergency ? '<span class="emergency-badge">Emergency</span>' : ""}
       <p class="meta-text">Help required at: ${escapeHtml(post.helpLocation || "Location not set")}</p>
       <p>${escapeHtml(post.text)}</p>
       <p class="comments-preview">${post.commentCount || 0} comment${post.commentCount === 1 ? "" : "s"}</p>
@@ -294,6 +331,7 @@ function createPostCard(post, currentUserId) {
   return card;
 }
 
+// Renders all posts in the feed
 function renderPosts(feedList, posts, currentUserId) {
   if (!posts.length) {
     renderEmptyFeed(feedList);
@@ -307,6 +345,33 @@ function renderPosts(feedList, posts, currentUserId) {
   });
 }
 
+// Filters posts using search input
+function filterPosts(posts, searchTerm) {
+  const normalizedTerm = searchTerm.trim().toLowerCase();
+
+  if (!normalizedTerm) {
+    return posts;
+  }
+
+  return posts.filter((post) => {
+    const searchableText = [
+      post.authorName,
+      post.authorArea,
+      post.categoryName,
+      post.helpLocation,
+      post.text,
+      post.status,
+      post.isEmergency ? "emergency urgent" : "",
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return searchableText.includes(normalizedTerm);
+  });
+}
+
+// Builds the single post details view
 function renderPostDetail(detailContainer, post, currentUserId) {
   const canChangeStatus = currentUserId === post.authorId;
   const statusClass = post.status === "resolved" ? "status-resolved" : "status-open";
@@ -318,6 +383,7 @@ function renderPostDetail(detailContainer, post, currentUserId) {
       <div class="meta-row">
         <p class="meta-text">${escapeHtml(post.authorArea || "Local community")} • ${formatDate(post.createdAt)}</p>
         <span class="category-badge">${escapeHtml(post.categoryName)}</span>
+        ${post.isEmergency ? '<span class="emergency-badge">Emergency</span>' : ""}
         <span class="status-badge ${statusClass}">${formatStatus(post.status)}</span>
       </div>
     </div>
@@ -339,6 +405,7 @@ function renderPostDetail(detailContainer, post, currentUserId) {
   `;
 }
 
+// Shows all comments for a post
 function renderComments(commentsContainer, comments) {
   if (!comments.length) {
     commentsContainer.innerHTML =
@@ -359,7 +426,37 @@ function renderComments(commentsContainer, comments) {
     .join("");
 }
 
-async function createPost(profile, categorySelect, requestLocation, requestText) {
+// Reusable notification card renderer
+function renderNotificationItems(container, items, emptyTitle, emptyText) {
+  if (!container) {
+    return;
+  }
+
+  if (!items.length) {
+    container.innerHTML = `
+      <article class="notification-card">
+        <h3>${escapeHtml(emptyTitle)}</h3>
+        <p class="meta-text">${escapeHtml(emptyText)}</p>
+      </article>
+    `;
+    return;
+  }
+
+  container.innerHTML = items
+    .map(
+      (item) => `
+        <article class="notification-card">
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.text)}</p>
+          <p class="meta-text">${escapeHtml(item.meta)}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
+// Saves a new help post in Firestore
+async function createPost(profile, categorySelect, requestLocation, requestText, isEmergency) {
   const selectedOption = categorySelect.options[categorySelect.selectedIndex];
 
   await addDoc(collection(db, "posts"), {
@@ -369,6 +466,7 @@ async function createPost(profile, categorySelect, requestLocation, requestText)
     categoryId: categorySelect.value,
     categoryName: selectedOption.dataset.categoryName || selectedOption.textContent,
     helpLocation: requestLocation,
+    isEmergency,
     text: requestText,
     status: "open",
     commentCount: 0,
@@ -378,6 +476,7 @@ async function createPost(profile, categorySelect, requestLocation, requestText)
   });
 }
 
+// Switches a post between open and resolved
 async function togglePostStatus(post) {
   const nextStatus = post.status === "open" ? "resolved" : "open";
 
@@ -388,6 +487,7 @@ async function togglePostStatus(post) {
   });
 }
 
+// Adds a new comment and increases comment count
 async function addCommentToPost(postId, profile, text) {
   const postRef = doc(db, "posts", postId);
 
@@ -416,6 +516,7 @@ async function addCommentToPost(postId, profile, text) {
   });
 }
 
+// All login page logic starts here
 function initializeLoginPage() {
   const loginForm = document.getElementById("login-form");
   const signupForm = document.getElementById("signup-form");
@@ -430,6 +531,7 @@ function initializeLoginPage() {
 
   let hasCheckedInitialAuth = false;
 
+  // If user is already logged in, don't keep them on login page
   onAuthStateChanged(auth, (user) => {
     if (!hasCheckedInitialAuth) {
       hasCheckedInitialAuth = true;
@@ -443,6 +545,7 @@ function initializeLoginPage() {
   });
 
   function showLoginForm() {
+    // Shows only the login form
     loginForm.classList.remove("hidden");
     signupForm.classList.add("hidden");
     loginButton.classList.add("active");
@@ -452,6 +555,7 @@ function initializeLoginPage() {
   }
 
   function showSignupForm() {
+    // Shows only the signup form
     signupForm.classList.remove("hidden");
     loginForm.classList.add("hidden");
     signupButton.classList.add("active");
@@ -463,6 +567,7 @@ function initializeLoginPage() {
   loginButton.addEventListener("click", showLoginForm);
   signupButton.addEventListener("click", showSignupForm);
 
+  // Login form submit
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     clearMessage(loginMessage);
@@ -484,6 +589,7 @@ function initializeLoginPage() {
     }
   });
 
+  // Signup form submit
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     clearMessage(loginMessage);
@@ -515,6 +621,7 @@ function initializeLoginPage() {
   });
 }
 
+// Home page only needs auth aware buttons
 function initializeHomePage() {
   const homeMainCta = document.getElementById("home-main-cta");
   const logoutButton = document.getElementById("logout-btn");
@@ -530,20 +637,38 @@ function initializeHomePage() {
   attachLogoutHandler();
 }
 
+// Feed page logic
 function initializeFeedPage() {
   const feedList = document.getElementById("feed-list");
   const postForm = document.getElementById("post-form");
+  const searchField = document.getElementById("feed-search");
   const categoryField = document.getElementById("request-category");
   const locationField = document.getElementById("request-location");
+  const emergencyField = document.getElementById("request-emergency");
   const feedMessage = document.getElementById("feed-message");
   const currentUserName = document.getElementById("current-user-name");
   const currentUserArea = document.getElementById("current-user-area");
 
-  if (!feedList || !postForm || !categoryField || !locationField) {
+  if (!feedList || !postForm || !searchField || !categoryField || !locationField || !emergencyField) {
     return;
   }
 
   requireAuthRedirect(async (user) => {
+    let allPosts = [];
+
+    // Updates the feed again whenever search changes
+    function updateFilteredFeed() {
+      const searchTerm = searchField.value.trim();
+      const filteredPosts = filterPosts(allPosts, searchTerm);
+
+      if (searchTerm && !filteredPosts.length) {
+        renderNoSearchResults(feedList, searchTerm);
+        return;
+      }
+
+      renderPosts(feedList, filteredPosts, user.uid);
+    }
+
     try {
       const profile = await ensureUserProfile(user);
 
@@ -561,27 +686,34 @@ function initializeFeedPage() {
 
     attachLogoutHandler(feedMessage);
 
+    // Live updates for all posts
     onSnapshot(
       query(collection(db, "posts"), orderBy("createdAt", "desc")),
       (snapshot) => {
-        const posts = snapshot.docs.map((postDoc) => ({
+        allPosts = snapshot.docs.map((postDoc) => ({
           id: postDoc.id,
           ...postDoc.data(),
         }));
 
-        renderPosts(feedList, posts, user.uid);
+        updateFilteredFeed();
       },
       (error) => {
         showMessage(feedMessage, getFriendlyError(error), "error");
       }
     );
 
+    searchField.addEventListener("input", () => {
+      updateFilteredFeed();
+    });
+
+    // Create new help request
     postForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearMessage(feedMessage);
 
       const requestCategory = categoryField.value.trim();
       const requestLocation = locationField.value.trim();
+      const isEmergency = emergencyField.checked;
       const requestText = postForm.requestText.value.trim();
 
       if (!requestCategory) {
@@ -601,7 +733,7 @@ function initializeFeedPage() {
 
       try {
         const profile = await ensureUserProfile(user);
-        await createPost(profile, categoryField, requestLocation, requestText);
+        await createPost(profile, categoryField, requestLocation, requestText, isEmergency);
         postForm.reset();
         showMessage(feedMessage, "Your request was added to the feed.", "success");
       } catch (error) {
@@ -609,6 +741,7 @@ function initializeFeedPage() {
       }
     });
 
+    // Lets post author change status from the feed
     feedList.addEventListener("click", async (event) => {
       const clickedButton = event.target.closest("[data-action='toggle-status']");
 
@@ -641,6 +774,7 @@ function initializeFeedPage() {
   });
 }
 
+// Post details page logic
 function initializePostPage() {
   const detailContainer = document.getElementById("post-detail");
   const commentsContainer = document.getElementById("post-comments");
@@ -687,6 +821,7 @@ function initializePostPage() {
     const postRef = doc(db, "posts", postId);
     const commentsRef = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
 
+    // Keeps post details updated
     onSnapshot(
       postRef,
       (postSnapshot) => {
@@ -712,6 +847,7 @@ function initializePostPage() {
       }
     );
 
+    // Keeps comments updated
     onSnapshot(
       commentsRef,
       (snapshot) => {
@@ -727,6 +863,7 @@ function initializePostPage() {
       }
     );
 
+    // Lets author change status on detail page too
     detailContainer.addEventListener("click", async (event) => {
       const toggleButton = event.target.closest("[data-action='toggle-detail-status']");
 
@@ -755,6 +892,7 @@ function initializePostPage() {
       }
     });
 
+    // Adds a new comment
     commentForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearMessage(commentMessage);
@@ -777,6 +915,7 @@ function initializePostPage() {
   });
 }
 
+// Profile page logic
 function initializeProfilePage() {
   const profileForm = document.getElementById("profile-form");
   const profileMessage = document.getElementById("profile-message");
@@ -806,6 +945,7 @@ function initializeProfilePage() {
     profileForm.profileEmail.value = profile.email || "";
     profileForm.profileArea.value = profile.area || "";
 
+    // Saves profile changes
     profileForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearMessage(profileMessage);
@@ -834,6 +974,120 @@ function initializeProfilePage() {
   });
 }
 
+// Notifications page logic
+function initializeNotificationsPage() {
+  const emergencyNotifications = document.getElementById("emergency-notifications");
+  const messageNotifications = document.getElementById("message-notifications");
+  const nearbyNotifications = document.getElementById("nearby-notifications");
+  const notificationsMessage = document.getElementById("notifications-message");
+  const notificationsUserName = document.getElementById("notifications-user-name");
+  const notificationsUserArea = document.getElementById("notifications-user-area");
+
+  if (!emergencyNotifications || !messageNotifications || !nearbyNotifications) {
+    return;
+  }
+
+  requireAuthRedirect(async (user) => {
+    let profile;
+
+    try {
+      profile = await ensureUserProfile(user);
+      notificationsUserName.textContent = profile.displayName;
+      notificationsUserArea.textContent = profile.area || "Area not set";
+    } catch (error) {
+      showMessage(notificationsMessage, getFriendlyError(error), "error");
+      return;
+    }
+
+    attachLogoutHandler(notificationsMessage);
+
+    try {
+      // Gets all posts first so we can build alerts
+      const postsSnapshot = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc")));
+      const posts = postsSnapshot.docs.map((postDoc) => ({
+        id: postDoc.id,
+        ...postDoc.data(),
+      }));
+
+      const emergencyItems = posts
+        .filter((post) => post.authorId !== user.uid && post.status === "open" && post.isEmergency)
+        .slice(0, 6)
+        .map((post) => ({
+          title: `Emergency help needed in ${post.categoryName}`,
+          text: `${post.authorName} needs urgent help at ${post.helpLocation || "a local place"}.`,
+          meta: `${post.authorArea || "Local area"} • ${formatDate(post.createdAt)}`,
+        }));
+
+      const messageItems = [];
+      const nearbyItems = posts
+        .filter(
+          (post) =>
+            post.authorId !== user.uid &&
+            post.status === "open" &&
+            profile.area &&
+            post.authorArea &&
+            post.authorArea.toLowerCase() === profile.area.toLowerCase()
+        )
+        .slice(0, 5)
+        .map((post) => ({
+          title: `${post.categoryName} request nearby`,
+          text: `${post.authorName} needs help at ${post.helpLocation || "a local place"}.`,
+          meta: `${post.authorArea || "Local area"} • ${formatDate(post.createdAt)}`,
+        }));
+
+      const userPosts = posts.filter((post) => post.authorId === user.uid).slice(0, 5);
+
+      // Checks recent comments on the current user's posts
+      for (const post of userPosts) {
+        const commentsSnapshot = await getDocs(
+          query(collection(db, "posts", post.id, "comments"), orderBy("createdAt", "desc"), limit(3))
+        );
+
+        commentsSnapshot.docs.forEach((commentDoc) => {
+          const comment = commentDoc.data();
+
+          if (comment.authorId === user.uid) {
+            return;
+          }
+
+          messageItems.push({
+            title: `New message on your ${post.categoryName} request`,
+            text: `${comment.authorName} commented: ${comment.text}`,
+            meta: `${post.helpLocation || "Request location"} • ${formatDate(comment.createdAt)}`,
+            sortTime: comment.createdAt?.toMillis ? comment.createdAt.toMillis() : 0,
+          });
+        });
+      }
+
+      messageItems.sort((firstItem, secondItem) => secondItem.sortTime - firstItem.sortTime);
+
+      renderNotificationItems(
+        emergencyNotifications,
+        emergencyItems,
+        "No emergency alerts",
+        "Urgent requests from other users will appear here."
+      );
+
+      renderNotificationItems(
+        messageNotifications,
+        messageItems.slice(0, 6).map(({ sortTime, ...item }) => item),
+        "No new messages",
+        "Comments on your requests will appear here."
+      );
+
+      renderNotificationItems(
+        nearbyNotifications,
+        nearbyItems,
+        "No nearby alerts",
+        "Open help requests from your area will appear here."
+      );
+    } catch (error) {
+      showMessage(notificationsMessage, getFriendlyError(error), "error");
+    }
+  });
+}
+
+// One logout button handler for all pages
 function attachLogoutHandler(messageElement) {
   const logoutButton = document.getElementById("logout-btn");
 
@@ -853,8 +1107,10 @@ function attachLogoutHandler(messageElement) {
   });
 }
 
+// Run the page setups that match the current page
 initializeLoginPage();
 initializeHomePage();
 initializeFeedPage();
 initializePostPage();
 initializeProfilePage();
+initializeNotificationsPage();

@@ -60,6 +60,7 @@ service cloud.firestore {
           "categoryId",
           "categoryName",
           "helpLocation",
+          "isEmergency",
           "text",
           "status",
           "commentCount",
@@ -73,6 +74,7 @@ service cloud.firestore {
         && request.resource.data.categoryId is string
         && request.resource.data.categoryName is string
         && request.resource.data.helpLocation is string
+        && request.resource.data.isEmergency is bool
         && request.resource.data.text is string
         && request.resource.data.status == "open"
         && request.resource.data.commentCount == 0

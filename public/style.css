@@ -1,4 +1,5 @@
 :root {
+  /* Main color variables */
   --bg-main: #f5efe8;
   --bg-panel: #fffaf5;
   --bg-soft: #f4e2d1;
@@ -13,6 +14,7 @@
 }
 
 * {
+  /* Keeps padding and border inside width */
   box-sizing: border-box;
 }
 
@@ -21,6 +23,7 @@ html {
 }
 
 body {
+  /* Base font and page colors */
   margin: 0;
   font-family: "Poppins", sans-serif;
   background: linear-gradient(180deg, #fbf5ee 0%, #f5efe8 100%);
@@ -40,6 +43,7 @@ select {
 }
 
 .hero {
+  /* Hero section on home page */
   padding: 24px 24px 48px;
   background:
     radial-gradient(circle at top right, rgba(210, 105, 60, 0.2), transparent 24%),
@@ -47,6 +51,7 @@ select {
 }
 
 .topbar {
+  /* Top navigation layout */
   max-width: 1100px;
   margin: 0 auto 32px;
   display: flex;
@@ -72,6 +77,7 @@ select {
 .auth-layout,
 .feed-layout,
 .detail-layout {
+  /* Main grid layouts used on pages */
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
@@ -144,6 +150,7 @@ select {
 .future-card,
 .credential-card,
 .tip-box {
+  /* Shared card style */
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 24px;
@@ -160,6 +167,11 @@ select {
 .credential-card h2,
 .tip-box h3 {
   margin-top: 0;
+}
+
+.info-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 
 .code-pill {
@@ -219,6 +231,7 @@ select {
 .auth-form,
 .post-form,
 .comment-form {
+  /* Form fields stacked nicely */
   display: grid;
   gap: 12px;
 }
@@ -272,6 +285,7 @@ textarea {
 .comment-btn,
 .link-btn,
 .toggle-btn {
+  /* Shared button style */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -353,12 +367,78 @@ textarea {
 }
 
 .feed-main {
+  /* Main feed area */
   display: grid;
   gap: 20px;
 }
 
+.search-box {
+  /* Search area above posts */
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.about-grid {
+  /* Two cards for mission and vision */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.info-card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.checkbox-row input {
+  width: auto;
+}
+
+.notification-grid {
+  /* Notifications shown in columns */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.notification-column h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.notification-list {
+  display: grid;
+  gap: 14px;
+}
+
+.notification-card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.notification-card h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.notification-card p {
+  margin: 0;
+}
 
 .feed-list {
+  /* List of all post cards */
   display: grid;
   gap: 18px;
 }
@@ -376,6 +456,7 @@ textarea {
 }
 
 .card-top {
+  /* Top row inside each post card */
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -410,6 +491,18 @@ textarea {
   color: var(--accent-dark);
   font-size: 0.82rem;
   font-weight: 600;
+}
+
+.emergency-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #ffe3e0;
+  color: #bf2f22;
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .status-open {
@@ -468,6 +561,7 @@ textarea {
 }
 
 .comment-form {
+  /* Comment input and button layout */
   grid-template-columns: 1fr auto;
   align-items: start;
 }
@@ -509,11 +603,14 @@ textarea {
 }
 
 @media (max-width: 900px) {
+  /* Stack layouts on smaller screens */
   .hero-content,
   .auth-layout,
   .feed-layout,
   .detail-layout,
-  .future-grid {
+  .about-grid,
+  .future-grid,
+  .notification-grid {
     grid-template-columns: 1fr;
   }
 
@@ -529,6 +626,7 @@ textarea {
 }
 
 @media (max-width: 640px) {
+  /* Smaller spacing for phones */
   .hero,
   .feed-header,
   .page-shell,

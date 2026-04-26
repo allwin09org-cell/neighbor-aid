@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighbor Aid Notifications</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Notifications page header -->
+    <header class="feed-header">
+      <nav class="topbar">
+        <div class="brand">Neighbor Aid Notifications</div>
+        <div class="topbar-links">
+          <a href="index.html">Home</a>
+          <a href="feed.html">Feed</a>
+          <a href="profile.html">Profile</a>
+          <button class="link-btn" id="logout-btn" type="button">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="feed-page-shell">
+      <section class="detail-layout">
+        <!-- Logged in user details -->
+        <aside class="panel profile-panel">
+          <p class="section-label">Alerts</p>
+          <h2 id="notifications-user-name">Current User</h2>
+          <p class="meta-text" id="notifications-user-area">Area not set</p>
+          <p class="meta-large">
+            Check this page for new messages and local help alerts.
+          </p>
+        </aside>
+
+        <section class="detail-main">
+          <section class="panel">
+            <!-- Different notification groups -->
+            <div class="section-heading">
+              <p class="section-label">Notifications</p>
+              <h1>Updates for you</h1>
+              <p>Read recent comments on your requests and nearby help alerts.</p>
+            </div>
+
+            <div class="notification-grid">
+              <section class="notification-column">
+                <h2>Emergency alerts</h2>
+                <div class="notification-list" id="emergency-notifications"></div>
+              </section>
+
+              <section class="notification-column">
+                <h2>New messages</h2>
+                <div class="notification-list" id="message-notifications"></div>
+              </section>
+
+              <section class="notification-column">
+                <h2>Nearby help alerts</h2>
+                <div class="notification-list" id="nearby-notifications"></div>
+              </section>
+            </div>
+
+            <p class="message-text" id="notifications-message" aria-live="polite"></p>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

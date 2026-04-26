@@ -13,12 +13,14 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- Single post page header -->
     <header class="feed-header">
       <nav class="topbar">
         <div class="brand">Neighbor Aid Post</div>
         <div class="topbar-links">
           <a href="index.html">Home</a>
           <a href="feed.html">Feed</a>
+          <a href="notifications.html">Notifications</a>
           <a href="profile.html">Profile</a>
           <button class="link-btn" id="logout-btn" type="button">Logout</button>
         </div>
@@ -27,6 +29,7 @@
 
     <main class="feed-page-shell">
       <section class="detail-layout">
+        <!-- Small user info box -->
         <aside class="panel profile-panel">
           <p class="section-label">Current User</p>
           <h2 id="detail-user-name">Current User</h2>
@@ -39,9 +42,11 @@
         </aside>
 
         <section class="detail-main">
+          <!-- Post details come here from Firebase -->
           <section class="panel" id="post-detail"></section>
 
           <section class="panel">
+            <!-- Comments section -->
             <div class="section-heading">
               <p class="section-label">Comments</p>
               <h2>Support discussion</h2>

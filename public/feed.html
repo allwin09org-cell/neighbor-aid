@@ -13,11 +13,13 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- Feed page header -->
     <header class="feed-header">
       <nav class="topbar">
         <div class="brand">Neighbor Aid Feed</div>
         <div class="topbar-links">
           <a href="index.html">Home</a>
+          <a href="notifications.html">Notifications</a>
           <a href="profile.html">Profile</a>
           <button class="link-btn" id="logout-btn" type="button">Logout</button>
         </div>
@@ -26,6 +28,7 @@
 
     <main class="feed-page-shell">
       <section class="feed-layout">
+        <!-- Current user details -->
         <aside class="panel profile-panel">
           <p class="section-label">Current User</p>
           <h2 id="current-user-name">Current User</h2>
@@ -36,6 +39,7 @@
             <h3>What you can do</h3>
             <ul>
               <li>Create a new help request</li>
+              <li>Mark urgent requests as emergency alerts</li>
               <li>Open a post to read all comments</li>
               <li>Mark posts as open or resolved</li>
             </ul>
@@ -44,6 +48,7 @@
 
         <section class="feed-main">
           <section class="panel">
+            <!-- Feed heading -->
             <div class="section-heading">
               <p class="section-label">Community Feed</p>
               <h1>Neighbor help requests</h1>
@@ -52,6 +57,21 @@
               </p>
             </div>
 
+            <!-- Search box for quick filtering -->
+            <div class="search-box">
+              <label for="feed-search">Search help requests</label>
+              <input
+                id="feed-search"
+                name="feedSearch"
+                type="text"
+                placeholder="Search by service, help request, user, category, or location"
+              />
+              <p class="meta-text">
+                Quickly find posts by typing a category, person's name, service, or help location.
+              </p>
+            </div>
+
+            <!-- Form to add a new help request -->
             <form class="post-form" id="post-form">
               <label for="request-category">Choose a category</label>
               <select id="request-category" name="requestCategory">
@@ -76,6 +96,11 @@
                 placeholder="Example: Near City Hospital, Main Road"
               />
 
+              <label class="checkbox-row" for="request-emergency">
+                <input id="request-emergency" name="requestEmergency" type="checkbox" />
+                Mark this request as emergency
+              </label>
+
               <label for="request-text">Share a new request</label>
               <textarea
                 id="request-text"
@@ -90,6 +115,7 @@
             <p class="message-text" id="feed-message" aria-live="polite"></p>
           </section>
 
+          <!-- All posts will be shown here -->
           <section class="feed-list" id="feed-list"></section>
         </section>
       </section>
